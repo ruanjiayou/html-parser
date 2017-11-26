@@ -1,0 +1,29 @@
+{
+  "name": "html-parser",
+  "version": "1.0.0",
+  "description": "html解析与相关节点API接口",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "mocha test/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/ruanjiayou/html-parser.git"
+  },
+  "keywords": [
+    "html",
+    "parse"
+  ],
+  "author": "ruanjiayou",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ruanjiayou/html-parser/issues"
+  },
+  "homepage": "https://github.com/ruanjiayou/html-parser#readme",
+  "devDependencies": {
+    "lodash": "^4.17.4"
+  }
+}

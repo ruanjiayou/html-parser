@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="gb2312" />
+<meta name="applicable-device" content="pc">
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+<meta http-equiv="Cache-Control" content="no-transform" />
+<title>浅谈nodejs中的类定义和继承的套路_node.js_脚本之家</title>
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+<meta name="keywords" content="nodejs类定义,nodejs,继承,nodejs,类继承" />
+<meta name="description" content="本篇文章主要介绍了浅谈nodejs中的类定义和继承的套路，小编觉得挺不错的，现在分享给大家，也给大家做个参考。一起跟随小编过来看看吧
+" />
+<link rel="alternate" media="only screen and(max-width: 640px)" href="http://m.jb51.net/article/119609.htm" />
+<meta http-equiv="mobile-agent" content="format=html5; url=http://m.jb51.net/article/119609.htm" />
+<meta http-equiv="mobile-agent" content="format=xhtml; url=http://m.jb51.net/article/119609.htm" />
+<script type="text/javascript">
+var tougao="zx";var lmname="JavaScript";
+(function(){var reWriteUrl=function(url){if(url){var Splits=url.split("/"),siteName=window.location.pathname;if(typeof siteName!=="undefined"){return "http://m.jb51.net"+siteName}}};if(/Android|webOS|iPhone|iPad|Windows Phone|iPod|BlackBerry|SymbianOS|Nokia|Mobile/i.test(navigator.userAgent)){var url=window.location.href;var pathname=window.location.pathname;if(url.indexOf("?pc")<0){try{window.location.href=reWriteUrl(url)}catch(e){}}}})();
+</script>
+<link type="text/css" href="/skin/2016/base.css" rel="stylesheet" />
+<link type="text/css" href="/skin/2016/common.css" rel="stylesheet" />
+<script type="text/javascript" src="/jslib/jquery/jquery.min.js"></script>
+<script type=text/javascript src="/js/function.js"></script>
+</head>
+<body>
+<!--head Star -->
+<div id="head">
+  <div class="toolBar">
+  <div class="main">
+    <!--topNav Star -->
+    <div class="topNav clearfix">
+      <ul class="navList fl">
+        <li>
+          <div class="one"><a href="http://www.jb51.net" target="_blank">脚本之家</a></div>
+        </li>
+        <li>
+          <div class="one"><a href="http://www.jb51.net/softs/" target="_blank">软件下载<i class="icon"></i></a></div>
+          <div class="two">
+<a href="/softs/android.html" target="_blank">android软件</a> <a href="/softs/mac.html" target="_blank">MAC软件</a> <a href="/qudong/" target="_blank">驱动下载</a> <a href="/fonts/" target="_blank">字体下载</a> <a href="/dll/" target="_blank">DLL下载</a> </div>
+</li>
+        <li>
+          <div class="one"><a href="/codes/" target="_blank">源码下载<i class="icon"></i></a></div>
+          <div class="two"> <a href="/codes/asp.html" target="_blank">asp源码</a> <a href="/codes/php.html" target="_blank">php源码</a> <a href="/codes/aspnet.html" target="_blank">asp.net源码</a> <a href="/codes/jsp.html" target="_blank">jsp源码</a> <a href="/codes/editor.html" target="_blank">网页编辑器</a> <a href="/codes/list123_1.html" target="_blank">数据库管理</a> <a href="/codes/list124_1.html" target="_blank">常用组件</a> <a href="/jiaoben/" target="_blank">脚本下载</a></div>
+        </li>
+        <li>
+          <div class="one"><a href="http://tools.jb51.net" target="_blank">在线工具<i class="icon"></i></a></div>
+          <div class="two"> <a href="/shouce/" target="_blank">在线手册</a> <a href="/tools/cssyasuo.shtml" target="_blank">CSS格式化</a> <a href="http://tools.jb51.net/code/js" target="_blank">JS格式化</a> <a href="/tools/html-js.htm" target="_blank">Html转化为Js</a> <a href="http://tools.jb51.net/regex/javascript" target="_blank">js正则表达式</a>
+</div>
+        </li>
+        <li>
+          <div class="one"><a href="/w3school/" target="_blank">网页教程基础</a></div>
+        </li>
+			<li>
+          <div class="one"><a href="http://s.jb51.net" target="_blank">服务器常用软件</a></div>
+        </li>
+		<li>
+          <div class="one"><a href="http://m.jb51.net" target="_blank">手机版</a></div>
+          <div class="two"><img src="http://files.jb51.net/images/m.jb51.net.png" data-baiduimageplus-ignore /></div>     
+        </li>
+        <li class="watch">
+          <div class="one"><a href="http://www.jb51.net/about.htm" target="_blank" rel="nofollow" ><i class="icon"></i>关注微信</a></div>
+          <div class="two"><img src="http://files.jb51.net/images/weixin_200.gif" data-baiduimageplus-ignore /></div>
+        </li>
+      </ul>
+      <div class="navUser mt5 fr" id="jb51_topbar" >
+
+      </div>
+    </div>
+    <!--topNav End -->
+  </div>
+</div>
+
+  <div class="main clearfix">
+    <div class="mtb10 clearfix">
+      <div class="logo"><a href="http://www.jb51.net/"><img src="http://www.jb51.net/images/logo.gif" title="脚本之家" alt="脚本之家" /></a></div>
+      <div class="logom fl"><span id="logo_m" class="jbTestPos"></span></div>
+      <div class="logor fr"><span id="logo_r" class="jbTestPos"></span></div>
+    </div>
+<!-- 导航-->
+<DIV class="nav_top clearfix">
+<UL>
+<li><a href="http://www.jb51.net/web/">网页制作</a></li>
+<li><a href="http://www.jb51.net/list/index_1.htm">网络编程</a></li>
+<li><a href="http://www.jb51.net/list/index_96.htm">脚本专栏</a></li>
+<li><a href="http://www.jb51.net/jiaoben/">脚本下载</a></li>
+<li><a href="http://www.jb51.net/list/index_104.htm">数据库</a></li>
+<li><a href="http://www.jb51.net/cms/">CMS教程</a></li>
+<li><a href="http://www.jb51.net/books/">电子书籍</a></li>
+<li><a href="http://www.jb51.net/pingmian/">平面设计</a></li>
+<li><a href="http://www.jb51.net/media/">媒体动画</a></li>
+<li><a href="http://www.jb51.net/os/">操作系统</a></li>
+<li><a href="http://www.jb51.net/yunying/">网站运营</a></li>
+<li><a href="http://www.jb51.net/hack/">网络安全</a></li>
+<li class="last"><a href="http://www.jb51.net/shouce/">在线手册</a></li>
+
+</UL>
+</DIV>
+
+<!--导航结束-->
+<div class="subnav clearfix">
+<ul><li><a href='/list/list_61_1.htm' title="基础知识">基础知识</a></li>
+<li><a href='/list/list_23_1.htm' title="javascript类库">javascript类库</a></li>
+<li><a href='/list/list_22_1.htm' title="表单特效">表单特效</a></li>
+<li><a href='/list/list_18_1.htm' title="广告代码">广告代码</a></li>
+<li><a href='/list/list_43_1.htm' title="网页特效">网页特效</a></li>
+<li><a href='/list/list_26_1.htm' title="黑客性质">黑客性质</a></li>
+<li><a href='/list/list_222_1.htm' title="javascript技巧">javascript技巧</a></li>
+<li><a href='/list/list_232_1.htm' title="DOM">DOM</a></li>
+<li><a href='/list/list_243_1.htm' title="node.js">node.js</a></li>
+<li><a href='/list/list_248_1.htm' title="js其它">js其它</a></li>
+</ul>
+</div>
+<div class="NavBar clearfix ptb10">
+<div class="fl w690">
+<div class="box mb15 mt10"><i class="icon"></i>您的位置：<a href='/'>首页</a> → <a href="/list/index_1.htm" title="网络编程">网络编程</a> → <a href="/list/list_3_1.htm" title="JavaScript">JavaScript</a> → <a href="/list/list_243_1.htm" title="node.js">node.js</a> → 正文内容 nodejs类定义和继承</div>
+</div>
+<div class="fr w300"><div class="search">
+<form action="http://so.jb51.net/cse/search" target="_blank">
+    <input type="hidden" name="s" value="10520733385329581432">
+    <input type="hidden" name="ie" value="gbk">
+    <input type="text" name="q" class="key_input" placeholder="请输入关键词">
+    <input type="submit" value="搜索" class="c_btn">
+</form></div></div>
+  </div>
+</div>
+<!--head End -->
+<div class="main mb10 clearfix">
+<div class="clearfix"><span id="tonglan1" class="jbTestPos"></span></div>
+</div>
+
+<!--content Star -->
+<div id="contents">
+ <div class="main clearfix">
+      <div class="w690 fl">
+      <div class="article-content border">
+      <div class="title">
+            <h1 class="YaHei">浅谈nodejs中的类定义和继承的套路</h1>
+            <p>作者：随风而行之青衫磊落险峰行  字体：[<a href="javascript:turnbig()">增加</a> <a href="javascript:turnsmall()">减小</a>] 类型：转载 时间：2017-07-26<a href="#comments"> 我要评论</a></p>
+        </div>
+        <div class="art_desc mt10"><div id="art_demo">本篇文章主要介绍了浅谈nodejs中的类定义和继承的套路，小编觉得挺不错的，现在分享给大家，也给大家做个参考。一起跟随小编过来看看吧
+</div></div>
+        <div class="lbd clearfix"><span id="art_up" class="jbTestPos"></span></div>
+        <div id="content">
+<p>javascript是一门极其灵活的语言。<br />
+</p>
+<p>灵活到你无法忍受！<br />
+</p>
+<p>我个人喜欢强类型的语言，例如c/c++，c#等。</p>
+<p>但是js代表着未来，所以需要学习。<br />
+</p>
+<p>js中类定义以及继承有n多种方式,现在来学习一下nodejs类定义以及继承的固定套路。</p>
+<p><strong>套路1. 在构造函数(constructor)中总是使用instanceof操作符:</strong></p>
+<div class="jb51code">
+<pre class="brush:js;">
+function Base() {
+  if (!(this instanceof Base)) {
+    return new Base();
+  }
+}</pre>
+</div>
+<p>上述代码的含义就是: 如果Base这个函数调用时没有使用new操作符，则会自动调用new操作符，返回Base的实例<br />
+</p>
+<p><strong>套路2. 所有成员变量定义在构造函数(constructor)中</strong></p>
+<div class="jb51code">
+<pre class="brush:js;">
+function Base() {
+  if (!(this instanceof Base)) {
+    return new Base();
+  }
+
+  //开始成员变量定义
+  this.className = "Base";
+}
+
+</pre>
+</div>
+<p><strong>套路3. 所有的成员方法以函数表达式方式定义在原型(prototype)中</strong>【为什么要这样，其原因在套路4中的inherits源码注释中】</p>
+<div class="jb51code">
+<pre class="brush:js;">
+Base.prototype.printClassName = function(){
+   console.log(this.className);
+}</pre>
+</div>
+<p>调用如下:</p>
+<div class="jb51code">
+<pre class="brush:js;">
+var base = Base(); //不使用new操作符，直接进行函数调用，自动调用new操作符
+console.log(base.className);
+base.printClassName();
+</pre>
+</div>
+<p><strong>套路4. 使用util.inherits(子类，父类)进行原型(prototype)继承</strong></p>
+<p>先来看一下inherits的源码:</p>
+<div class="jb51code">
+<pre class="brush:js;">
+var inherits = function(ctor, superCtor) {
+  //严格相等测试:undefined/null
+  //子类构造函数必须存在
+  if (ctor === undefined || ctor === null)
+    throw new TypeError('The constructor to "inherits" must not be ' +
+      'null or undefined');
+  //严格相等测试:undefined/null
+  //父类构造函数必须存在
+  if (superCtor === undefined || superCtor === null)
+    throw new TypeError('The super constructor to "inherits" must not ' +
+      'be null or undefined');
+
+  //要点: 如果要继承的话，父类必须要有prototype对象
+  //这也是为什么将所有成员方法都定义在prototype对象中！！！
+  if (superCtor.prototype === undefined)
+    throw new TypeError('The super constructor to "inherits" must ' +
+      'have a prototype');
+
+  //让子类构造函数对象增加一个super_指针，指向父类，这样就形成继承链
+  ctor.super_ = superCtor;
+
+  //调用Object.setPrototypeOf(子类的prototype,父类的prototype)
+  Object.setPrototypeOf(ctor.prototype, superCtor.prototype);
+};
+</pre>
+</div>
+<p><a target="_blank" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/setPrototypeOf" rel="external nofollow" >Object.setPrototypeOf</a> : 该链接可以了解一下setPrototypeOf方法，非常简单，其Polyfill如下:<br />
+</p>
+<div class="jb51code">
+<pre class="brush:js;">
+// 仅适用于Chrome和FireFox，在IE中不工作：
+Object.setPrototypeOf = Object.setPrototypeOf || function (obj, proto) {
+ obj.__proto__ = proto;
+ return obj; 
+}
+</pre>
+</div>
+<p>我们来测试一下继承。</p>
+<p>先定义子类</p>
+<div class="jb51code">
+<pre class="brush:js;">
+function Child() {
+  //老样子，套路1
+  if (!(this instanceof Child)) {
+    return new Child();
+  }
+}
+</pre>
+</div>
+<p>然后根据套路4， 调用inherits函数进行原型继承</p>
+<div class="jb51code">
+<pre class="brush:js;">
+//注意，inherits调用不在构造函数，也不在原型对象，而是全局调用
+inherits(Child, Base);</pre>
+</div>
+<p>最后我们调用一下child的printClassName方法，该方法在基类原型对象中实现。</p>
+<p style="text-align: center"><img src="http://files.jb51.net/file_images/article/201707/201772695435414.jpg&#63;201762695449" alt="" /></p>
+<p>子类调用基类函数-undefined.png<br />
+</p>
+<p>出现错误，child.printClassName()后输出undefined!<br />
+</p>
+<p>为什么呢&#63;</p>
+<p><strong>套路5. 子类的构造函数中使用 父类.call(this)，实现父类构造函数中的成员变量继承</strong></p>
+<div class="jb51code">
+<pre class="brush:js;">
+function Child() {
+  //老样子，套路1
+  if (!(this instanceof Child)) {
+    return new Child();
+  }
+
+  //增加这句话，在调用printClassName就能正常的输出Base字符串
+  Base.call(this);
+
+  //如果要更新基类的成员变量，请在Base.call(this)之后！
+  this._className = "Child"; //调用printClassName就能正常的输出Child字符串
+}
+</pre>
+</div>
+<p><a target="_blank" href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Function/call" rel="external nofollow" >Function.prototype.call()</a></p>
+<p>由此可见，nodejs中的继承需要：<br />
+</p>
+<p>在构造函数中调用 父类.call(this)，实现父类成员变量的继承<br />
+</p>
+<p>全局调用inherits(子类，父类) 进行父类成员函数的继承<br />
+</p>
+<p>以上就是本文的全部内容，希望对大家的学习有所帮助，也希望大家多多支持脚本之家。</p>
+
+</div><!--endmain-->
+<div class="art_xg">
+
+</div>
+<div class="lbd clearfix">
+<span id="art_down" class="jbTestPos"></span>
+</div>
+<div id="shoucang"></div>
+<div class="tags mt10">
+<strong>Tags：</strong><a href="http://common.jb51.net/tag/nodejs/1.htm" target="_blank" title="搜索关于nodejs的文章">nodejs</a> <a href="http://common.jb51.net/tag/%E7%B1%BB%E5%AE%9A%E4%B9%89/1.htm" target="_blank" title="搜索关于类定义的文章">类定义</a> <a href="http://common.jb51.net/tag/%E7%BB%A7%E6%89%BF/1.htm" target="_blank" title="搜索关于继承的文章">继承</a> 
+</div>
+<DIV class="relatedarticle clearfix mt5">
+<H2>相关文章</H2>
+<ul><li><span>2017-03-03</span><a href="/article/108864.htm" title="nodejs中向HTTP响应传送进程的输出" target="_blank">nodejs中向HTTP响应传送进程的输出</a></li><li><span>2017-04-04</span><a href="/article/112455.htm" title="用Nodejs搭建服务器访问html、css、JS等静态资源文件" target="_blank">用Nodejs搭建服务器访问html、css、JS等静态资源文件</a></li><li><span>2017-03-03</span><a href="/article/110079.htm" title="node.js平台下的mysql数据库配置及连接" target="_blank">node.js平台下的mysql数据库配置及连接</a></li><li><span>2014-11-11</span><a href="/article/57092.htm" title="node.js开发中使用Node Supervisor实现监测文件修改并自动重启应用" target="_blank">node.js开发中使用Node Supervisor实现监测文件修改并自动重启应</a></li><li><span>2017-04-04</span><a href="/article/111852.htm" title="nodejs 终端打印进度条实例代码" target="_blank">nodejs 终端打印进度条实例代码</a></li><li><span>2017-05-05</span><a href="/article/112759.htm" title="深入理解node.js之path模块" target="_blank">深入理解node.js之path模块</a></li><li><span>2017-02-02</span><a href="/article/106847.htm" title="node.js入门教程之querystring模块的使用方法" target="_blank">node.js入门教程之querystring模块的使用方法</a></li><li><span>2015-01-01</span><a href="/article/59845.htm" title="Node.js开源应用框架HapiJS介绍" target="_blank">Node.js开源应用框架HapiJS介绍</a></li><li><span>2015-06-06</span><a href="/article/68306.htm" title="浅析Node.js中使用依赖注入的相关问题及解决方法" target="_blank">浅析Node.js中使用依赖注入的相关问题及解决方法</a></li><li><span>2014-12-12</span><a href="/article/58466.htm" title="node.js中的http.response.removeHeader方法使用说明" target="_blank">node.js中的http.response.removeHeader方法使用说明</a></li></ul>
+</DIV>
+<div class="lbd clearfix mt5">
+<span id="art_down2" class="jbTestPos"></span>
+</div>
+<a href="#comments"></a>
+<div id="comments">
+<H2>最新评论</H2>
+<div class="pd5"><div id="SOHUCS" sid="art_119609"></div></div>
+</div>
+      </div><!--endborder-->
+      </div><!--end fl-->
+      
+<div class="w300 fr">
+<div class="r300 clearfix"><span id="side_up" class="jbTestPos"></span></div>
+<DIV class="tabTitleBar mt10 bgf borderTblue">
+<DIV class="borderTnone pb10 YaHei">
+<H4 class="blue">大家感兴趣的内容</H4>
+<UL class="newsList newList-in">
+<li><EM class="no1">1</EM><a href="/article/52409.htm" title="一行命令搞定node.js 版本升级" target="_blank">一行命令搞定node.js 版本升级</a></li><li><EM class="no2">2</EM><a href="/article/50837.htm" title="Node.js（安装，启动，测试）" target="_blank">Node.js（安装，启动，测试）</a></li><li><EM class="no3">3</EM><a href="/article/50669.htm" title="nodejs npm install全局安装和本地安装的区别" target="_blank">nodejs npm install全局安装和本</a></li><li><EM class="no4">4</EM><a href="/article/57874.htm" title="node.js+Ajax实现获取HTTP服务器返回数据" target="_blank">node.js+Ajax实现获取HTTP服务器</a></li><li><EM class="no5">5</EM><a href="/article/50667.htm" title="nodejs文件操作模块FS（File System）常用函数简明总结" target="_blank">nodejs文件操作模块FS（File Sys</a></li><li><EM class="no6">6</EM><a href="/article/59815.htm" title="NodeJS学习笔记之FS文件模块" target="_blank">NodeJS学习笔记之FS文件模块</a></li><li><EM class="no7">7</EM><a href="/article/59810.htm" title="NodeJS学习笔记之Http模块" target="_blank">NodeJS学习笔记之Http模块</a></li><li><EM class="no8">8</EM><a href="/article/57474.htm" title="nodejs开发环境配置与使用" target="_blank">nodejs开发环境配置与使用</a></li><li><EM class="no9">9</EM><a href="/article/90518.htm" title="卸载安装Node.js与npm过程详解" target="_blank">卸载安装Node.js与npm过程详解</a></li><li><EM class="no10">10</EM><a href="/article/59287.htm" title="Nodejs中调用系统命令、Shell脚本和Python脚本的方法和实例" target="_blank">Nodejs中调用系统命令、Shell脚本</a></li>
+</UL>
+</DIV>
+</DIV>
+<div class="r300 clearfix mt10"><span id="idctu" class="jbTestPos"></span></div>
+<DIV class="tabTitleBar mt10 bgf borderTblue">
+<DIV class="borderTnone pb10 YaHei">
+<H4 class="blue">最近更新的内容</H4>
+<UL class="newsListA">
+<ul><li><a href="/article/57086.htm" title="Node.js中的模块机制学习笔记" target="_blank">Node.js中的模块机制学习笔记</a></li><li><a href="/article/95114.htm" title="Ubuntu 16.04 64位中搭建Node.js开发环境教程" target="_blank">Ubuntu 16.04 64位中搭建Node.js开发环境</a></li><li><a href="/article/52113.htm" title="Node.js编码规范" target="_blank">Node.js编码规范</a></li><li><a href="/article/111005.htm" title="nodejs个人博客开发第五步 分配数据" target="_blank">nodejs个人博客开发第五步 分配数据</a></li><li><a href="/article/58639.htm" title="node.js中的fs.appendFileSync方法使用说明" target="_blank">node.js中的fs.appendFileSync方法使用说</a></li><li><a href="/article/113890.htm" title="详解使用nodeJs安装Vue-cli" target="_blank">详解使用nodeJs安装Vue-cli</a></li><li><a href="/article/52938.htm" title="Node.js 服务器端应用开发框架 -- Hapi.js" target="_blank">Node.js 服务器端应用开发框架 -- Hapi.j</a></li><li><a href="/article/113191.htm" title="node.js中EJS 模板快速入门教程" target="_blank">node.js中EJS 模板快速入门教程</a></li><li><a href="/article/55600.htm" title="我用的一些Node.js开发工具、开发包、框架等总结" target="_blank">我用的一些Node.js开发工具、开发包、框架</a></li><li><a href="/article/98300.htm" title="使用node.js中的Buffer类处理二进制数据的方法" target="_blank">使用node.js中的Buffer类处理二进制数据的</a></li></ul>
+</UL>
+</DIV>
+</DIV>   
+<div class="r300 clearfix mt10"><span id="idctu1" class="jbTestPos"></span></div>
+<DIV class="tabTitleBar mt10 bgf borderTblue">
+<DIV class="borderTnone pb10 YaHei">
+<H4 class="blue">常用在线小工具</H4>
+<ul class="newsListA"><span id="bctools" class="jbTestPos"></span></ul>
+</DIV>
+</DIV>
+<div class="r300 clearfix mt10" id="idctu2"><span id="idctu2" class="jbTestPos"></span></div>
+<div class="mt10 rFixedBox">
+<span id="r_2" class="jbTestPos"></span>
+</div>
+      
+      
+      </div><!--end fr-->
+      </div>
+</div><!--end content-->
+<div id="footer">
+<div class="main clearfix">
+<p>
+<a href="http://www.jb51.net/about.htm" target="_blank">关于我们</a> - 
+<a href="http://www.jb51.net/support.htm" target="_blank">广告合作</a> - 
+<a href="http://www.jb51.net/linkus.htm" target="_blank">联系我们</a> -  
+<a href="http://www.jb51.net/sm.htm" target="_blank">免责声明</a> -  
+<a href="http://www.jb51.net/sitemap.htm" target="_blank">网站地图</a> - 
+<a href="tencent://message/?uin=461478385&Site=http://www.jb51.net" target="_blank">投诉建议</a> - 
+<a href="http://www.jb51.net/up.htm" target="_blank">在线投稿</a>
+</p>
+<p>&copy;CopyRight 2006-2017 JB51.Net Inc All Rights Reserved. 脚本之家 版权所有</p>
+</div>
+</div><!--end footer-->
+<link type="text/css" rel="stylesheet" href="/jslib/syntaxhighlighter/styles/shCore.css" />
+<link type="text/css" rel="Stylesheet" href="/jslib/syntaxhighlighter/styles/shThemeDefault.css" />
+<script type="text/javascript" src="/jslib/syntaxhighlighter/scripts/shCore.js"></script>
+<script type="text/javascript" src="/jslib/syntaxhighlighter/scripts/shAutoloader.js"></script>
+<script type="text/javascript">
+(function(){
+    var bp = document.createElement('script');
+    bp.src = '//push.zhanzhang.baidu.com/push.js';
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+if (top.location != self.location)top.location=self.location;
+$(function(){
+	$('#content').find('img').each(function(){
+        var img = this;
+        if (img.width >= 650){
+            img.style.width = "650px";
+            img.style.height = "auto";
+            //$(img).removeAttr('height');
+            var aTag = document.createElement('a');
+            aTag.href = img.src;
+			aTag.target="_blank";
+            $(aTag).addClass('bPic')
+            .insertAfter(img).append(img)
+          }
+    });
+	$(window).scroll(function()
+    {	
+    	//rFixedBox跟随滚动
+    	var h = $(window).height();
+        var top = $(window).scrollTop();
+    	var rFixedBox = $('.rFixedBox').prev().offset();
+        var fixedTop = rFixedBox.top;
+		
+        if(top>=fixedTop+344)
+        {
+			var h1 = parseInt($('#content').children('.main').height());
+			if(parseInt(top) + 340 < h1){
+				$('.rFixedBox').css({'position':'fixed','top': 0});
+			}else{
+				$('.rFixedBox').css({'position':'absolute','top': h1-510});
+			}
+        }
+        else
+        {
+            $('.rFixedBox').css({'position':'static', 'top':0});   
+        }	
+       /* return true;*/
+    });
+/*$(document).ready(function() {
+  $("#content img").unveil();
+});	*/
+SyntaxHighlighter.autoloader(
+	'applescript			/jslib/syntaxhighlighter/scripts/shBrushAppleScript.js',
+	'actionscript3 as3		/jslib/syntaxhighlighter/scripts/shBrushAS3.js',
+	'bash shell				/jslib/syntaxhighlighter/scripts/shBrushBash.js',
+	'coldfusion cf			/jslib/syntaxhighlighter/scripts/shBrushColdFusion.js',
+	'cpp c					/jslib/syntaxhighlighter/scripts/shBrushCpp.js',
+	'obj-c objc				/jslib/syntaxhighlighter/scripts/shBrushObjC.js',
+	'c# c-sharp csharp		/jslib/syntaxhighlighter/scripts/shBrushCSharp.js',
+	'css					/jslib/syntaxhighlighter/scripts/shBrushCss.js',
+	'delphi pascal			/jslib/syntaxhighlighter/scripts/shBrushDelphi.js',
+	'diff patch pas			/jslib/syntaxhighlighter/scripts/shBrushDiff.js',
+	'erl erlang				/jslib/syntaxhighlighter/scripts/shBrushErlang.js',
+	'groovy					/jslib/syntaxhighlighter/scripts/shBrushGroovy.js',
+	'haxe hx				/jslib/syntaxhighlighter/scripts/shBrushHaxe.js',
+	'java					/jslib/syntaxhighlighter/scripts/shBrushJava.js',
+	'jfx javafx				/jslib/syntaxhighlighter/scripts/shBrushJavaFX.js',
+	'js jscript javascript	/jslib/syntaxhighlighter/scripts/shBrushJScript.js',
+	'perl pl				/jslib/syntaxhighlighter/scripts/shBrushPerl.js',
+	'php					/jslib/syntaxhighlighter/scripts/shBrushPhp.js',
+	'text plain				/jslib/syntaxhighlighter/scripts/shBrushPlain.js',
+	'py python				/jslib/syntaxhighlighter/scripts/shBrushPython.js',
+	'ruby rails ror rb		/jslib/syntaxhighlighter/scripts/shBrushRuby.js',
+	'scala					/jslib/syntaxhighlighter/scripts/shBrushScala.js',
+	'sql					/jslib/syntaxhighlighter/scripts/shBrushSql.js',
+	'vb vbnet				/jslib/syntaxhighlighter/scripts/shBrushVb.js',
+	'ps powershell			/jslib/syntaxhighlighter/scripts/shBrushPowerShell.js',
+	'xml xhtml xslt html	/jslib/syntaxhighlighter/scripts/shBrushXml.js'
+);
+SyntaxHighlighter.all();
+});
+var ourl="http://www.jianshu.com/p/9e585cbdea93?utm_source=tuicool&utm_medium=referral";
+</script>
+<script type="text/javascript" src='http://img.jb51.net/good/arc.js'></script>
+<script>jbLoader();</script><script class="closetag">jbLoader(true);</script>
+<script>jbLoader();</script><script class="closetag">jbLoader(true);</script>
+<script>jbLoader();</script><script class="closetag">jbLoader(true);</script>
+<script>jbLoader();</script><script class="closetag">jbLoader(true);</script>
+<script>jbLoader();</script><script class="closetag">jbLoader(true);</script>
+<script>jbLoader();</script><script class="closetag">jbLoader(true);</script>
+<script>jbLoader();</script><script class="closetag">jbLoader(true);</script>
+<script>jbLoader();</script><script class="closetag">jbLoader(true);</script>
+<script>jbLoader();</script><script class="closetag">jbLoader(true);</script>
+<script>jbLoader();</script><script class="closetag">jbLoader(true);</script>
+<script>jbLoader();</script><script class="closetag">jbLoader(true);</script>
+<script>jbLoader();</script><script class="closetag">jbLoader(true);</script>
+<div id="tongji">
+<script type="text/javascript" src="http://common.jb51.net/inc/tongji.js"></script>
+<script charset="utf-8" type="text/javascript" src="http://changyan.sohu.com/upload/changyan.js" ></script>
+<script type="text/javascript">
+window.changyan.api.config({
+appid: 'cyrHH3dwi',
+conf: 'prod_1dc5dc80970106099d43fe242b7465fc'
+});
+</script>
+</div> 
+<script type="text/javascript" src="http://www.jb51.net/pl.asp?id=119609"></script>
+</body>
+</html>
+<!-- published at 2017/9/17 2:51:58By dxycms qq:461478385  -->
