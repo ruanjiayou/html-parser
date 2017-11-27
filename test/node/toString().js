@@ -29,7 +29,7 @@ describe('toString()', function(){
 
         let n3 = new Node('<img/>');
         n1.append(n3);
-        assert.equal('<div></div>\n<img/>', n1.toString());
+        assert.equal('<div></div><img/>', n1.toString());
     });
     it('div有子节点节点 <br/><img/>', function(){
         let n1 = new Node();

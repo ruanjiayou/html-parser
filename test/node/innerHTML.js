@@ -1,4 +1,5 @@
 const Node = require('../../lib/node');
+require('./../../index');
 const assert = require('assert');
 
 describe('innerHTML', function(){
@@ -17,5 +18,11 @@ describe('innerHTML', function(){
         n2.append(n1);
         n2.append(new Node('abcd'));
         assert.equal('测试<img/><div>测试</div>abcd', n2.innerHTML);
+
+        let n3 = new Node();
+        n3.nodeName = 'div';
+        n3.nodeType = Node.TYPE.D;
+        n3.innerHTML = '测试<img/><div>测试</div>abcd';
+        assert.equal(n3.innerHTML, '<div>测试<img/><div>测试</div>abcd</div>');
     });
 });
