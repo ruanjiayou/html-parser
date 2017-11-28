@@ -2,23 +2,42 @@ const parser = require('../../index');
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
+const Node = require('../../lib/node');
 
-describe('测试几个网站的页面', function(){
-    it('环球网', function(){
-        let p = path.join(__dirname, '../data/example-huanqiu-1.html');
-        let str = fs.readFileSync(p, 'utf-8');
-        
-        let t_base = new Date().getTime();
-        console.log(t_base);
-        
-        let doc1 = new parser().parse(str);
-        
-        let t_parse = new Date().getTime()
-        console.log(t_parse - t_base);
+describe('测试几个网站的页面', function () {
+    it('解析注释', function(){
+        let str = '<!DOCTYPE html>';
 
-        fs.writeFileSync('d:/test.html', doc1.toString());
+        let doc1 = new parser(str);
 
-        let t_2str = new Date().getTime();
-        console.log(t_2str - t_parse);
+        assert.equal(doc1.innerHTML, '<!DOCTYPE html>');
+    });
+    it('解析文字', function(){
+        let str = '阮家友';
+
+        let doc1 = new parser(str);
+
+        assert.equal(doc1.innerHTML, '阮家友');
+    });
+    it('解析单标签', function(){
+        let str = '<html>';
+
+        let doc1 = new parser(str);
+
+        assert.equal(doc1.innerHTML, '<html></html>');
+    });
+    it('解析双标签', function(){
+        let str = '<html></html>';
+
+        let doc1 = new parser(str);
+
+        assert.equal(doc1.innerHTML, '<html></html>');
+    });
+    it('解析混合', function(){
+        let str = '<html><title>xxx</title></html>';
+
+        let doc1 = new parser(str);
+
+        assert.equal(doc1.innerHTML, '<html><title>xxx</title></html>');
     });
 });
