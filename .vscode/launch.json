@@ -9,7 +9,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceFolder}/lib/node.js"
+            "program": "${file}"
         }
     ]
 }
