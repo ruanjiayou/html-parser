@@ -1,4 +1,4 @@
-const Node = require('../../lib/node');
+const Node = require('../../index').Node;
 const assert = require('assert');
 
 describe('测试attr()', function(){

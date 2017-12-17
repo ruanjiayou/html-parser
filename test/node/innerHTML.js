@@ -1,5 +1,5 @@
 const document = require('../../index');
-const Node = require('../../lib/node');
+const Node = document.Node;
 const assert = require('assert');
 
 describe('innerHTML', function(){

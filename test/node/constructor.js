@@ -1,4 +1,4 @@
-const Node = require('../../lib/node');
+const Node = require('../../index').Node;
 const assert = require('assert');
 
 describe('测试new Node()构造函数', function () {

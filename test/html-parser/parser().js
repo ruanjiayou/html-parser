@@ -2,7 +2,7 @@ const parser = require('../../index');
 const assert = require('assert');
 const fs = require('fs');
 const path = require('path');
-const Node = require('../../lib/node');
+const Node = require('../../index').Node;
 
 describe('测试几个网站的页面', function () {
     it('解析注释', function(){

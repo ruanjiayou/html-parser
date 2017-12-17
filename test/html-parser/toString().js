@@ -1,5 +1,5 @@
 const parser = require('../../index');
-const Node = require('../../lib/node');
+const Node = parser.Node;
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
