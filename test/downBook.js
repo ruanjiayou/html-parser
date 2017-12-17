@@ -9,7 +9,7 @@ const URI = require('uri-parser-helper');
 //const shttp = require('request-promise');
 const shttp = NET.shttp;
 
-const entry = new URI('http://www.tsxsw.com/html/1/1990/');
+const entry = new URI('http://www.tsxsw.com/html/23/23308/');
 const analysis = {
     path: 'd:/novel_down_analysis.txt',
     book: '',
@@ -44,7 +44,7 @@ async function downBook(uri) {
     analysis.author = authorName;
     // 4.添加作者
     let author = await shttp
-        .patch('http://novel.jiayou.com/admin/author')
+        .patch('http://api.novel.jiayou.com/admin/author')
         .send({ name: authorName })
         .emit();
     console.log(author.result);
@@ -64,12 +64,18 @@ async function downBook(uri) {
         throw new Error('book no name!');
     }
     analysis.book = bookName;
+    let poster = '';
+    _.forEach(document.$('img'), function(n){
+        if(n.attr('alt')===analysis.book){
+            poster = n.attr('src');
+            return false;
+        }
+    });
     // 6.创建书籍
     let book = await shttp
-        .patch('http://novel.jiayou.com/admin/book')
-        .send({ authorId: author.result.id, name: bookName })
+        .patch('http://api.novel.jiayou.com/admin/book')
+        .send({ authorId: author.result.id, name: bookName, poster: poster })
         .emit();
-    console.log(book.result);
     if (book.result.count !== 0) {
         throw new Error('书籍已采集?')
     }
@@ -96,7 +102,7 @@ async function downBook(uri) {
             let tongji = IO.count(content);
             count = count + tongji.chinese + tongji.punctuation + tongji.num;
             await shttp
-                .post(`http://novel.jiayou.com/admin/book/${book.result.id}/chapter`)
+                .post(`http://api.novel.jiayou.com/admin/book/${book.result.id}/chapter`)
                 .send({ title: title, content: content })
                 .emit();
         }
@@ -105,14 +111,47 @@ async function downBook(uri) {
     analysis.count = count;
     console.log(`总字数:${count}`);
     await shttp
-        .put(`http://novel.jiayou.com/admin/book/${book.result.id}`)
+        .put(`http://api.novel.jiayou.com/admin/book/${book.result.id}`)
         .send({ count: count })
         .emit();
     analysis.finish = new Date().format('{yy}-{mm}-{dd} {hh}:{ii}:{ss}');
     IO.addTxt(analysis.path, '\n' + JSON.stringify(analysis));
 }
+async function downBooks(){
+    let i = 31;
+    for(;i<=95;i++){
+        let res = await NET.getHTML(`http://www.tsxsw.com/qb/${i}/`);
+        if (res.status !== NET.Result.STATUS_SUCCESS) {
+            throw new Error('获取网页失败!!!');
+        } else {
+            let doc = new Parser(res.message);
+            let urls = doc.$('a');
+            let remainUrls = new Set();
+            for(let k =0;k<urls.length;k++){
+                let href = urls[k].attr('href');
+                if(/^http[:]\/\/www\.tsxsw\.com\/\html\/\d+\/\d+\/$/.test(href) && false===remainUrls.has(href)){
+                    remainUrls.add(href);
+                    console.log(href);
+                    try{
+                        await downBook(href);
+                    } catch(err){
+                        console.log(`down error:${err.message}`);
+                    }
+                }
+            }
+        }
+    }
+}
+/*
 downBook(entry.href).then(function () {
     console.log('下载完成');
 }).catch(function (err) {
     console.log(`error:${err.message}`);
+});
+*/
+
+downBooks().then(function(){
+    console.log('end');
+}).catch(function(err){
+    console.log('err:'+err.message);
 });

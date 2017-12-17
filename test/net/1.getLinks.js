@@ -14,7 +14,7 @@ const shttp = require('request-promise');
  * db
  * 
  */
-/*
+
 const entry = new URI('http://www.tsxsw.com/html/1/1990/');
 NET.getHTML(entry.toString()).then(function (res) {
     if (res.status === NET.Result.STATUS_SUCCESS) {
@@ -47,6 +47,11 @@ NET.getHTML(entry.toString()).then(function (res) {
             let num = (o.attr('href') || '').replace('.html', '');
             return parseInt(num);
         });
+        _.forEach(doc.$('img'), function(n){
+            if(n.attr('alt')===info.book){
+                info.poster = n.attr('src');
+            }
+        });
         console.log(info);
         console.log(`links length:${links.length}`);
         links.forEach(function (item, index) {
@@ -57,5 +62,5 @@ NET.getHTML(entry.toString()).then(function (res) {
 }).catch(function (err) {
     console.log(err.message);
 });
-*/
-const entry = new URI('http://novel.jiayou.com/admin/author');
+
+//const entry = new URI('http://novel.jiayou.com/admin/author');
