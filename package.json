@@ -1,5 +1,5 @@
 {
-  "name": "html-parser",
+  "name": "html-parser2",
   "version": "1.0.0",
   "description": "html解析与相关节点API接口",
   "main": "index.js",
