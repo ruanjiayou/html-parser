@@ -26,8 +26,7 @@
   "devDependencies": {
     "lodash": "^4.17.4",
     "request": "^2.83.0",
-    "request-promise": "^4.2.2",
-    "superagent": "^3.8.1"
+    "request-promise": "^4.2.2"
   },
   "dependencies": {
     "iconv-lite": "^0.4.19",
