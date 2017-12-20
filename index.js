@@ -194,7 +194,7 @@ class Node {
     set innerHTML(str) {
         let n = new HTML(str);
         console.log(n.toString());
-        if(this.firstChild){
+        if (this.firstChild) {
             this.firstChild.remove();
         }
         this.firstChild = n.Root.firstChild;
@@ -469,11 +469,11 @@ class Node {
         queue.push(this);
         while (queue.length !== 0 && bBreak === false) {
             temp = queue.shift();
-            if (temp.nodeType !== Node.ROOT) {
+            if (temp.nodeType !== Node.TYPE.ROOT) {
                 bBreak = true === await callback.call(this, temp) ? true : false;
             };
             // 确定callback中没有删除节点
-            if (temp.parentNode !== null || temp.nodeType === Node.ROOT) {
+            if (temp.parentNode !== null || temp.nodeType === Node.TYPE.ROOT) {
                 temp = temp.firstChild;
                 while (temp !== null) {
                     queue.push(temp);
@@ -494,7 +494,7 @@ class Node {
         queue.push(this);
         while (queue.length !== 0 && bBreak === false) {
             temp = queue.shift();
-            if (temp.nodeType !== Node.ROOT) {
+            if (temp.nodeType !== Node.TYPE.ROOT) {
                 bBreak = true === callback.call(temp, temp) ? true : false;
             };
             // 确定callback中没有删除节点
@@ -636,7 +636,7 @@ class HTML {
                 continue;
             }
             //不然有bug
-            if(bLeftBS || currNode.nodeName === 'script'){
+            if (bLeftBS || currNode.nodeName === 'script') {
                 if (ch === HTML.CHAR.D_QUOTE) {
                     //双引号开始过则闭合 否则开启
                     bQD = !bQD;
@@ -687,7 +687,7 @@ class HTML {
         }
         return this;
     };
-    get innerHTML(){
+    get innerHTML() {
         return this.Root.innerHTML;
     }
     // 提供的便捷方法
@@ -702,6 +702,9 @@ class HTML {
     bfsSync(callback) {
         this.Root.bfsSync(callback);
     }
+    async bfsAsync(callback) {
+        await this.Root.bfsAsync(callback);
+    }
     $(selector) {
         return this.Root.$(selector);
     }
@@ -710,7 +713,7 @@ HTML.CHAR = {
     L_BRACKET: `<`,
     R_BRACKET: `>`,
     S_QUOTE: `'`,
-    D_QUOTE:  `"`,
+    D_QUOTE: `"`,
     WARNING: `!`,
     CONNECTOR: `-`,
     BACKSLASH: `\\`
