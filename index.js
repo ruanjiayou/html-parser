@@ -401,7 +401,7 @@ class Node {
             text: ''
         };
         if (this.nodeType === Node.TYPE.TEXT || this.nodeType === Node.TYPE.COMMENT) {
-            res.text = this.Text;
+            res.text = this.text;
         }
         if (oc !== null) {
             res.children = [];
