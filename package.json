@@ -30,6 +30,6 @@
   },
   "dependencies": {
     "iconv-lite": "^0.4.19",
-    "uri-parser-helper": "0.0.1"
+    "uri-parser-helper": "^1.0.5"
   }
 }

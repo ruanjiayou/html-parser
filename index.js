@@ -1,4 +1,5 @@
 const _ = require('lodash');
+const $ = require('./lib/$');
 const attrReg = /\b([_a-zA-Z][-_a-zA-Z0-9]*)(\s*=\s*(['"])(.*?)(\3))?/g;
 const tagNameReg = /[a-z][0-9a-z]*/;
 /**
@@ -106,6 +107,55 @@ class Node {
         }
         return this.append(node);
     }
+    // 匹配器
+    _matcher(selector) {
+        let bFound = false;
+        switch (selector.charAt(0)) {
+            case '#':
+                bFound = this.attr('id') === selector.substring(1);
+                break;
+            case '.':
+                bFound = this.has(selector.substring(1));
+                break;
+            case '[':
+                if (selector.charAt(selector.length - 1) === ']') {
+                    //            1 name             2 ~$^*|      
+                    let m = /\[([a-z][a-z0-9]*)\s*([|^~$*]?)=\s*(['"]?)([\s\S]*?)\3\]/i.exec(selector);
+                    let attr = m[1];
+                    let nval = this.attributes[attr];
+                    let limit = m[2];
+                    let val = m[4];
+                    //console.log(m);
+                    if (val !== '') {
+                        switch (limit) {
+                            case '|':
+                                bFound = (nval === val ? true : false) || new RegExp(`^${val}-`).test(nval);
+                                break;
+                            case '^':
+                                bFound = new RegExp(`^${val}`).test(nval);
+                                break;
+                            case '~':
+                                bFound = nval.split(' ').indexOf(val) === -1 ? false : true;
+                                break;
+                            case '$':
+                                bFound = new RegExp(`${val}$`).test(nval);
+                                break;
+                            case '*':
+                                bFound = nval.indexOf(val) === -1 ? false : true;
+                                break;
+                            default:
+                                bFound = val === nval ? true : false;
+                                break;
+                        }
+                    } else {
+                        bFound = this.attributes[attr] === undefined ? false : true;
+                    }
+                }
+                break;
+            default: break;
+        }
+        return bFound;
+    }
     parse(str) {
         this.nodeType = Node.TYPE.TEXT;
         if (str[0] === '<' && str[str.length - 1] === '>') {
@@ -156,6 +206,9 @@ class Node {
     get nodeType() {
         return this._nodeType;
     }
+    get nodeValue() {
+        return null;
+    }
     get lastChild() {
         var res = this.firstChild;
         if (res !== null) {
@@ -164,6 +217,9 @@ class Node {
             }
         }
         return res;
+    }
+    get nextSibling() {
+        return this.nextNode;
     }
     get innerHTML() {
         let res = '',
@@ -230,6 +286,39 @@ class Node {
         }
         return res;
     }
+    get textContent() {
+        return this.innerText;
+    }
+    get id() {
+        return this.getAttribute('id');
+    }
+    get type() {
+        return this.getAttribute('type');
+    }
+    get className() {
+        return this.getAttribute('class');
+    }
+    get disabled() {
+        return this.getAttribute('disabled');
+    }
+    get checked() {
+        return this.getAttribute('checked');
+    }
+    get selected() {
+        return this.getAttribute('selected');
+    }
+
+    getAttribute(attr) {
+        let res = this.attributes[attr];
+        if (res === undefined) {
+            res = null;
+        }
+        return res;
+    }
+    setAttribute(attr, val) {
+        this.attr(attr, val);
+        return this;
+    }
     /**
      * 获取单个属性、设置单个属性、获取所有属性、设置多个属性
      * @param {string|object} key 
@@ -255,10 +344,7 @@ class Node {
                 }
                 return this;
             } else {
-                let res = this.attributes[key];
-                if (_.isNil(res)) {
-                    res = null;
-                }
+                let res = this.getAttribute(key);
                 return res;
             }
         }
@@ -513,49 +599,44 @@ class Node {
      * @param {string} selector 
      * 返回节点数组
      */
-    $(selector) {
+    $(selector, combator) {
         let res = [],
-            filter = [],
             bFound;
-        if (_.isString(selector)) {
-            filter = selector.split(',');
-            filter = filter.map(function (item) {
-                return item.trim();
-            });
+        switch (combator) {
+            case '+':
+                let temp = n.nextNode;
+                while (temp) {
+                    if (temp._matcher(selector)) {
+                        res.push(temp);
+                    } else {
+                        break;
+                    }
+                }
+                break;
+            case '~':
+                let temp = n.nextNode;
+                while (temp) {
+                    if (temp._matcher(selector)) {
+                        res.push(temp);
+                    }
+                }
+                break;
+            case '>':
+                let temp = n.parentNode.firstChild;
+                while (temp) {
+                    if (temp._matcher(selector)) {
+                        res.push(temp);
+                    }
+                }
+                break;
+            default: // 空格 空字符串
+                this.bfsSync(function (n) {
+                    if (n._matcher(selector)) {
+                        res.push(n);
+                    }
+                });
+                break;
         }
-        this.bfsSync(function (n) {
-            bFound = false;
-            for (let i = 0, len = filter.length; i < len; i++) {
-                let t = filter[i];
-                switch (t.charAt(0)) {
-                    case '#':
-                        bFound = n.attr('id') === t.substring(1);
-                        break;
-                    case '.':
-                        bFound = n.hasClass(t.substring(1));
-                        break;
-                    case '[':
-                        if (t.charAt(t.length - 1) === ']') {
-                            let reg = /\[([a-z][a-z0-9]+)(\s*=\s*(['"])([\s\S]+*)\3)\]/i;
-                            let m = reg.exec(t);
-                            if (m !== null) {
-                                bFound = true;
-                                let attr = n.attr(m[1]);
-                                if (m[4] !== '' && attr !== m[4]) {
-                                    bFound = false;
-                                }
-                            }
-                        }
-                        break;
-                    default:
-                        bFound = n.nodeName === t;
-                        break;
-                }
-                if (bFound) {
-                    res.push(n);
-                }
-            }
-        });
         return res;
     }
     // TODO:svg处理
@@ -581,13 +662,13 @@ class Node {
         'hr'
     ]);
     const type = {
-        ROOT: 'root',
+        ROOT: 9,
         S: 'single',
-        D: 'double',
+        D: 1,
         ST: 'start',
         SE: 'end',
-        TEXT: 'text',
-        COMMENT: 'comment'
+        TEXT: 3,
+        COMMENT: 8
     };
     // 单标签
     Node.SINGLE = single;
@@ -690,6 +771,12 @@ class HTML {
     get innerHTML() {
         return this.Root.innerHTML;
     }
+    createElement(tag) {
+        let n = new Node();
+        n.nodeName = tag.toLowerCase();
+        n.nodeType = Node.SINGLE.has(n.nodeName) ? Node.TYPE.S : Node.TYPE.D;
+        return n;
+    }
     // 提供的便捷方法
     // 美化输出
     toString() {
@@ -719,4 +806,5 @@ HTML.CHAR = {
     BACKSLASH: `\\`
 }
 HTML.Node = Node;
+HTML.$ = $;
 module.exports = HTML;
