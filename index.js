@@ -115,7 +115,7 @@ class Node {
                 bFound = this.attr('id') === selector.substring(1);
                 break;
             case '.':
-                bFound = this.has(selector.substring(1));
+                bFound = this.hasClass(selector.substring(1));
                 break;
             case '[':
                 if (selector.charAt(selector.length - 1) === ']') {
@@ -152,7 +152,9 @@ class Node {
                     }
                 }
                 break;
-            default: break;
+            default:
+                bFound = this.nodeName === selector ? true : false;
+                break;
         }
         return bFound;
     }
@@ -307,7 +309,6 @@ class Node {
     get selected() {
         return this.getAttribute('selected');
     }
-
     getAttribute(attr) {
         let res = this.attributes[attr];
         if (res === undefined) {
@@ -601,32 +602,36 @@ class Node {
      */
     $(selector, combator) {
         let res = [],
+            temp,
             bFound;
         switch (combator) {
             case '+':
-                let temp = n.nextNode;
+                temp = this.nextNode;
                 while (temp) {
                     if (temp._matcher(selector)) {
                         res.push(temp);
                     } else {
                         break;
                     }
+                    temp = temp.nextNode;
                 }
                 break;
             case '~':
-                let temp = n.nextNode;
+                temp = this.nextNode;
                 while (temp) {
                     if (temp._matcher(selector)) {
                         res.push(temp);
                     }
+                    temp = temp.nextNode;
                 }
                 break;
             case '>':
-                let temp = n.parentNode.firstChild;
+                temp = this.firstChild;
                 while (temp) {
                     if (temp._matcher(selector)) {
                         res.push(temp);
                     }
+                    temp = temp.nextNode;
                 }
                 break;
             default: // 空格 空字符串
@@ -726,6 +731,10 @@ class HTML {
                     //单引号开始过则此单引号进行闭合操作 否则开启
                     bQS = !bQS;
                 }
+                // 多余引号处理(只是一种情况)
+                if((bQD || bQS) && bLeftBS && html[i-1]!=='=') {
+                    bQD = bQS = false;
+                }
             }
             //如果在注释或字符串中则跳过
             if (bCommentST || bQD || bQS) {
@@ -766,6 +775,12 @@ class HTML {
             temp = html.substring(posL, currPos + 1);
             currNode._adjust(new Node(temp));
         }
+        // 有些html闭合不上~~
+        this.Root.bfsSync(function(item){
+            if(item.nodeType === Node.TYPE.ST) {
+                item.nodeType = Node.TYPE.D;
+            }
+        });
         return this;
     };
     get innerHTML() {
