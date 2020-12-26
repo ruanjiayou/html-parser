@@ -1,6 +1,6 @@
 {
   "name": "html-parser2",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "html解析与相关节点API接口",
   "main": "index.js",
   "directories": {

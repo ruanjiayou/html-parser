@@ -360,9 +360,9 @@ class Node {
         if (!_.isArray(o)) {
             o = [o];
         }
-        _.forEach(function (v) {
-            delete this.attributes[_.toString(v)];
-        });
+        for (let i = 0; i < o.length; i++) {
+            delete this.attributes[o[i]];
+        }
         return this;
     }
 

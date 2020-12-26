@@ -52,3 +52,5 @@ TODO:$选择器与util中的_
 ```
     更新uri-parser-helper版本
 ```
+## 2020-12-27 02:17:49
+- 修改removeAttr()的bug
