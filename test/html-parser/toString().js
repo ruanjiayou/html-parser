@@ -1,12 +1,11 @@
-const parser = require('../../index');
-const Node = parser.Node;
+const { HTML: parser, Node } = require('../../index');
 const assert = require('assert');
 const path = require('path');
 const fs = require('fs');
 
-describe('格式化HTML缩进', function(){
+describe('格式化HTML缩进', function () {
 
-    it('四种常见情况', function(){
+    it('四种常见情况', function () {
         let doc1 = new parser('<a></a>');
         let doc2 = new parser('<a>测试</a>');
         let doc3 = new parser('<a>测<img/>试</a>');
@@ -17,14 +16,14 @@ describe('格式化HTML缩进', function(){
         // console.log(doc4.toString());
         assert.equal(doc1.toString(), '<a></a>');
         assert.equal(doc2.toString(), '<a>测试</a>');
-        assert.equal(doc3.toString(), 
-`<a>
+        assert.equal(doc3.toString(),
+            `<a>
     测
     <img/>
     试
 </a>`);
-        assert.equal(doc4.toString(), 
-`<a>
+        assert.equal(doc4.toString(),
+            `<a>
     测
     <p>
         te
@@ -51,9 +50,9 @@ describe('格式化HTML缩进', function(){
         let t_2str = new Date().getTime();
         //console.log(t_2str - t_parse);
     });
-    
-    
-    it('13万节点-性能测试 php的只要11秒', function () {
+
+
+    it('13万节点-性能测试 php的只要11秒', async function (done) {
         let p = path.join(__dirname, '../data/example-maxLength.html');
         let str = fs.readFileSync(p, 'utf-8');
         console.log(`file size:${str.length}`);
@@ -73,9 +72,9 @@ describe('格式化HTML缩进', function(){
             double = 0,
             others = 0;
 
-        doc1.bfsSync(function(n){
+        doc1.bfsSync(function (n) {
             len++;
-            switch(n.nodeType) {
+            switch (n.nodeType) {
                 case Node.TYPE.S:
                     single++;
                     break;
@@ -93,7 +92,7 @@ describe('格式化HTML缩进', function(){
         console.log(`single:${single}`);
         console.log(`double:${double}`);
         console.log(`others:${others}`);
-
+        done()
     });
-    
+
 });

@@ -1,12 +1,9 @@
 const fs = require('fs');
 const path = require('path');
-const vQueryFactory = require('../../lib/$');
-const htmlparser = require('../../index');
+const { HTML, $ } = require('../../index');
 
 let str = fs.readFileSync(path.join(__dirname, '../data/example-huanqiu-1.html'), 'utf-8');
-console.log(str.length);
-let document = new htmlparser(str);
-let $ = vQueryFactory(document);
+let document = new HTML(str);
 
 // 2018-2-2 01:09:05 pass => 日本研发世界最小飞行汽车 可在公路起降
 /*
@@ -38,7 +35,6 @@ console.log(`document.bfs:${t4 - t3}`);// => 3ms
 // console.log(`document:${t8 - t7}`);
 
 // 2018-2-3 00:31:26
-console.log($('#text').length);
-console.log($('#text').find('p > img').attr('src'));
-
-process.exit();
+console.log(document.$('#text').length);
+console.log($(document).find('#text').length);
+console.log($(document).find('#text').find('p > img').attr('src'));

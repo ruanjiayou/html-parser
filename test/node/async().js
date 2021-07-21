@@ -1,4 +1,4 @@
-const parser = require('../../index');
+const { HTML } = require('../../index');
 const assert = require('assert');
 
 // describe('测试bfsAsync异步深度优先搜索', function () {
@@ -8,7 +8,7 @@ const assert = require('assert');
 //     });
 // });
 let i = 0;
-let doc4 = new parser('<a>测<p>te<img/>st</p>试</a>');
+let doc4 = new HTML('<a>测<p>te<img/>st</p>试</a>');
 console.log(doc4.toString());
 doc4.bfsAsync(async function (n) {
     console.log(i++);
