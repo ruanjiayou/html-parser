@@ -14,15 +14,15 @@ describe('格式化HTML缩进', function () {
         // console.log(doc2.toString());
         // console.log(doc3.toString());
         // console.log(doc4.toString());
-        assert.equal(doc1.toString(), '<a></a>');
-        assert.equal(doc2.toString(), '<a>测试</a>');
-        assert.equal(doc3.toString(),
+        assert.strictEqual(doc1.toString(), '<a></a>');
+        assert.strictEqual(doc2.toString(), '<a>测试</a>');
+        assert.strictEqual(doc3.toString(),
             `<a>
     测
     <img/>
     试
 </a>`);
-        assert.equal(doc4.toString(),
+        assert.strictEqual(doc4.toString(),
             `<a>
     测
     <p>

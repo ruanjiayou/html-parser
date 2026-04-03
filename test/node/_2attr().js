@@ -6,8 +6,8 @@ describe('_2attr()', function(){
         let n1 = new Node();
         n1._2attr('class="a b c"');
         n1._2attr('id = "div1"');
-        assert.equal(n1.attr('class'), 'a b c');
-        assert.equal(n1.attr('id'), 'div1');
+        assert.strictEqual(n1.attr('class'), 'a b c');
+        assert.strictEqual(n1.attr('id'), 'div1');
     });
     it('有属性名没有属性值的情况', function(){
         let n1 = new Node();
@@ -16,12 +16,12 @@ describe('_2attr()', function(){
         n1._2attr('disabled');
         n2._2attr('class="a"  disabled');
         n3._2attr('class="a"  disabled type="button"');
-        assert.equal('', n1.attr('disabled'));
-        assert.equal('a', n2.attr('class'));
-        assert.equal('', n2.attr('disabled'));
-        assert.equal('a', n3.attr('class'));
-        assert.equal('', n3.attr('disabled'));
-        assert.equal('button', n3.attr('type'));
+        assert.strictEqual('', n1.attr('disabled'));
+        assert.strictEqual('a', n2.attr('class'));
+        assert.strictEqual('', n2.attr('disabled'));
+        assert.strictEqual('a', n3.attr('class'));
+        assert.strictEqual('', n3.attr('disabled'));
+        assert.strictEqual('button', n3.attr('type'));
     });
     it('错误的情况', function(){
         let n1 = new Node();
@@ -41,13 +41,13 @@ describe('_2attr()', function(){
         n7._2attr('class="a" + type="button"');
         n8._2attr('class="a" 我 type="button"');
 
-        assert.equal('class="a"', n1.attr());
-        assert.equal('class="a"', n2.attr());
-        assert.equal('class="a"', n3.attr());
-        assert.equal('class="a"', n4.attr());
-        assert.equal('class="a" type="button"', n5.attr());
-        assert.equal('class="a" type="button"', n6.attr());
-        assert.equal('class="a" type="button"', n7.attr());
-        assert.equal('class="a" type="button"', n8.attr());
+        assert.strictEqual('class="a"', n1.attr());
+        assert.strictEqual('class="a"', n2.attr());
+        assert.strictEqual('class="a"', n3.attr());
+        assert.strictEqual('class="a"', n4.attr());
+        assert.strictEqual('class="a" type="button"', n5.attr());
+        assert.strictEqual('class="a" type="button"', n6.attr());
+        assert.strictEqual('class="a" type="button"', n7.attr());
+        assert.strictEqual('class="a" type="button"', n8.attr());
     });
 });

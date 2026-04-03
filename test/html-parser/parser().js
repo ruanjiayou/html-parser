@@ -9,41 +9,41 @@ describe('测试几个网站的页面', function () {
 
         let doc1 = new parser(str);
 
-        assert.equal(doc1.innerHTML, '<!DOCTYPE html>');
+        assert.strictEqual(doc1.innerHTML, '<!DOCTYPE html>');
     });
     it('解析文字', function () {
         let str = '阮家友';
 
         let doc1 = new parser(str);
 
-        assert.equal(doc1.innerHTML, '阮家友');
+        assert.strictEqual(doc1.innerHTML, '阮家友');
     });
     it('解析单标签', function () {
         let str = '<html>';
 
         let doc1 = new parser(str);
 
-        assert.equal(doc1.innerHTML, '<html></html>');
+        assert.strictEqual(doc1.innerHTML, '<html></html>');
     });
     it('解析双标签', function () {
         let str = '<html></html>';
 
         let doc1 = new parser(str);
 
-        assert.equal(doc1.innerHTML, '<html></html>');
+        assert.strictEqual(doc1.innerHTML, '<html></html>');
     });
     it('解析混合', function () {
         let str = '<html><title>xxx</title></html>';
 
         let doc1 = new parser(str);
 
-        assert.equal(doc1.innerHTML, '<html><title>xxx</title></html>');
+        assert.strictEqual(doc1.innerHTML, '<html><title>xxx</title></html>');
     });
     it('2018-2-6 14:35:28 测试bug', function () {
         let str = '<!--代码如诗 , 如痴如醉 !--><html xmlns:wb="http://open.weibo.com/wb"><title>xxx</title></html>';
 
         let doc1 = new parser(str);
-        assert.equal(doc1.innerHTML, '<!--代码如诗 , 如痴如醉 !--><html xmlns="" wb="http://open.weibo.com/wb"><title>xxx</title></html>');
+        assert.strictEqual(doc1.innerHTML, '<!--代码如诗 , 如痴如醉 !--><html xmlns="" wb="http://open.weibo.com/wb"><title>xxx</title></html>');
     });
     it('www.acg.fi', function () {
         let str = fs.readFileSync(path.join(__dirname, '../data/example-acg.html'), 'utf-8');
@@ -53,7 +53,23 @@ describe('测试几个网站的页面', function () {
     it('tag attr test', function () {
         let str = '<a href="https://at.umeng.com/jG9b4z "89"><img border="0" src="http://7vzp6z.com1.z0.glb.clouddn.com/aqu.gif" bdsfid="90"></a>';
         let doc1 = new parser(str);
-        assert.equal(doc1.toString(), '<a href="https://at.umeng.com/jG9b4z "><img border="0" src="http://7vzp6z.com1.z0.glb.clouddn.com/aqu.gif" bdsfid="90"/></a>');
+        assert.strictEqual(doc1.toString(), '<a href="https://at.umeng.com/jG9b4z "><img border="0" src="http://7vzp6z.com1.z0.glb.clouddn.com/aqu.gif" bdsfid="90"/></a>');
         console.log(doc1.toString());
     });
+    it('zhihu test', function () {
+        let str = `<figure data-size="normal"><noscript><img
+        src="https://picx.zhimg.com/50/v2-a017a27eb57f0568888ea094dd170f07_720w.jpg?source=1940ef5c" data-rawwidth="631"
+        data-rawheight="332" data-size="normal" data-caption=""
+        data-default-watermark-src="https://picx.zhimg.com/50/v2-fa79fec79885479425da81ccd7ac2b77_720w.jpg?source=1940ef5c"
+        class="origin_image zh-lightbox-thumb" width="631"
+        data-original="https://picx.zhimg.com/v2-a017a27eb57f0568888ea094dd170f07_r.jpg?source=1940ef5c" /></noscript><img
+      src="data:image/svg+xml;utf8,&lt;svg xmlns=&#39;http://www.w3.org/2000/svg&#39; width=&#39;631&#39; height=&#39;332&#39;&gt;&lt;/svg&gt;"
+      data-rawwidth="631" data-rawheight="332" data-size="normal" data-caption=""
+      data-default-watermark-src="https://picx.zhimg.com/50/v2-fa79fec79885479425da81ccd7ac2b77_720w.jpg?source=1940ef5c"
+      class="origin_image zh-lightbox-thumb lazy" width="631"
+      data-original="https://picx.zhimg.com/v2-a017a27eb57f0568888ea094dd170f07_r.jpg?source=1940ef5c"
+      data-actualsrc="https://picx.zhimg.com/50/v2-a017a27eb57f0568888ea094dd170f07_720w.jpg?source=1940ef5c" /></figure>`;
+        const doc = new parser(str);
+        console.log(JSON.stringify(doc.toJSON(), null, 2))
+    })
 });
